@@ -1,13 +1,10 @@
 #!/bin/bash -ex
 
-# docker-compose exec conjur-master \
-#   evoke configure master -h conjur-master -p secret demo
+docker-compose exec conjur-master \
+  evoke configure master -h conjur-master -p secret demo
 
-
-docker cp cdemo_conjur-master:/opt/conjur/etc/ssl/conjur-master.pem ../certs/
 docker cp cdemo_conjur-master:/opt/conjur/etc/ssl/ca.pem ../certs/
 openssl x509 -in ../certs/ca.pem -inform PEM -out ../certs/ca.crt
-openssl x509 -in ../certs/conjur-master.pem -inform PEM -out ../certs/conjur-master.crt
 
 api_key=$(docker-compose exec conjur-master sudo -u conjur conjur-plugin-service possum rails r "print Credentials['demo:user:admin'].api_key" | tail -1)
 
