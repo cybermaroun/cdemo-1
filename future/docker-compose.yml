@@ -37,10 +37,35 @@ services:
     image: conjurinc/cli5
     container_name: cdemo_conjur-cli
     environment:
-      CONJUR_APPLIANCE_URL: http://conjur-master
+      CONJUR_APPLIANCE_URL: https://conjur-master
       CONJUR_ACCOUNT: demo
       CONJUR_AUTHN_LOGIN: admin
     volumes:
-      - ./policy:/src/policy
+      - ./policies:/src/policies
+      - ./certs:/src/certs
+    links:
+      - conjur-master
+
+  conjur-cli-2:
+    image: conjurinc/cli5
+    container_name: cdemo_conjur-cli
+    environment:
+      CONJUR_APPLIANCE_URL: https://conjur-master
+      CONJUR_ACCOUNT: demo
+    volumes:
+      - ./policies:/src/policies
+      - ./certs:/src/certs
+    links:
+      - conjur-master
+
+  ansible:
+    build:
+      context: .
+      dockerfile: ansible/Dockerfile
+    container_name: cdemo_ansible
+    volumes:
+      - ./playbooks:/src/playbooks
+      - ./certs:/src/certs
+      - /var/run/docker.sock:/var/run/docker.sock
     links:
       - conjur-master
