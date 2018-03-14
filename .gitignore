@@ -8,3 +8,6 @@ build/hsm/*
 get-secret.sh
 config.cfg
 .env
+**/*.retry
+*.crt
+*.pem

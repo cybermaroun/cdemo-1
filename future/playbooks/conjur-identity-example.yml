@@ -1,0 +1,18 @@
+- hosts: all
+
+  roles:
+    - role: cyberark.conjur-host-identity
+      conjur_appliance_url: 'https://conjur-master'
+      conjur_account: 'demo'
+      conjur_host_factory_token: "{{lookup('env', 'HFTOKEN')}}"
+      conjur_host_name: "ansible"
+      conjur_ssl_certificate: "{{ lookup('file', '/src/certs/ca.crt') }}"
+      conjur_validate_certs: True
+
+  tasks:
+    - name: Grab Conjur Secret
+      shell: "summon --yaml 'DB_PASSWORD: !var ansible/staging/foo/database/password' printenv DB_PASSWORD"
+      register: db_pass_value
+
+    - debug:
+        var: db_pass_value
